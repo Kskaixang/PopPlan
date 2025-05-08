@@ -5,7 +5,7 @@ import { Spinner } from "react-bootstrap";
 
 function LatestEventList() {
   const [visibleEvents, setVisibleEvents] = useState([]); // 可見的事件
-  const [loading, setLoading] = useState(false); // 加載中
+  const [loading, setLoading] = useState(true); // 加載中
   const [page, setPage] = useState(1); // 當前頁數
   const [hasMore, setHasMore] = useState(true); // 是否還有更多資料
   const observer = useRef(); // 用來監控底部元素
@@ -30,9 +30,11 @@ function LatestEventList() {
   };
 
   useEffect(() => {
-    // 初次載入時先顯示前 12 筆
-    loadMoreEvents();
-  }, []);
+    // 初次載入時先顯示前 6 筆
+    const newEvents = eventList.slice(0, 12);
+    setVisibleEvents(newEvents);
+    setLoading(false); // 初次加載完成，設置 loading 為 false
+  }, []);  // 這裡確保只在組件加載時執行一次
 
   // 用 IntersectionObserver 監控底部元素
   const lastEventElementRef = (node) => {
@@ -51,6 +53,7 @@ function LatestEventList() {
 
   return (
     <div>
+      <h3>最新</h3>
       <div className="row">
         {visibleEvents.map((event) => (
           <div className="col-12 col-md-6 col-lg-4" key={event.id}>
