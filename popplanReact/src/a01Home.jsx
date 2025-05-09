@@ -4,6 +4,7 @@ import TagFilterPanel from "./components/TagFilterPanel";
 import LatestEventList from "./components/LatestEventList";
 import EventList from "./components/EventList";
 import "./components/button.css";
+import Slide from "./components/Slide";
 
 const tagGroups = {
   "分類A": ["樂團", "偶像"],
@@ -33,33 +34,36 @@ function Home() {
   */
 
   return (
-    <Container className="mt-4 p-4 border border-gray bg-white shadow rounded">
-      <Button
-        variant="outline-secondary" // 保持按鈕的邊框樣式
-        size="sm"
-        onClick={handleClearTags}
-        className="me-2 mb-2 rounded-pill shadow-sm px-3 custom-clear-button"
-      >
-        清除選中標籤
-      </Button>
-      <p></p>
+    <>
+      <Slide />
+      <Container className="mt-4 p-4 border border-gray bg-white shadow rounded">
+        <Button
+          variant="outline-secondary" // 保持按鈕的邊框樣式
+          size="sm"
+          onClick={handleClearTags}
+          className="me-2 mb-2 rounded-pill shadow-sm px-3 custom-clear-button"
+        >
+          清除選中標籤
+        </Button>
+        <p></p>
 
-      <div className="mb-4">
-        <TagFilterPanel
-          tagGroups={tagGroups} // 傳遞標籤群組
-          selectedTags={selectedTags} // 目前選中的標籤
-          onTagToggle={handleTagToggle} // 處理選擇標籤的邏輯
-          onClearTags={() => setSelectedTags([])}
-        />
-      </div>
+        <div className="mb-4">
+          <TagFilterPanel
+            tagGroups={tagGroups} // 傳遞標籤群組
+            selectedTags={selectedTags} // 目前選中的標籤
+            onTagToggle={handleTagToggle} // 處理選擇標籤的邏輯
+            onClearTags={() => setSelectedTags([])}
+          />
+        </div>
 
-      {selectedTags.length === 0 ? (
+        {selectedTags.length === 0 ? (
 
-        <LatestEventList />
-      ) : (
-        <EventList tags={selectedTags} />
-      )}
-    </Container>
+          <LatestEventList />
+        ) : (
+          <EventList tags={selectedTags} />
+        )}
+      </Container>
+    </>
   );
 }
 

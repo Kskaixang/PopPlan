@@ -45,12 +45,16 @@ function NavigationBar() {
                 </Nav.Link>
 
                 {/* 收藏報名入口 */}
-                <Nav.Link href="#myRegistrations">
-                  <BsHeart className="me-2" />
-                  {notificationCount > 0 && (
-                    <span className="badge bg-danger ms-1">{notificationCount}</span>
-                  )}
-                  收藏報名
+                <Nav.Link href="#myRegistrations" className='d-flex gap-3' >
+                  <div className="relative">
+                    <BsHeart className="me-2" />
+                    {notificationCount > 0 && (
+                      <span className="badge bg-danger absolute top-negative-1  start-50">{notificationCount}</span>
+                    )}
+                  </div>
+                  <span>
+                    收藏報名
+                  </span>
                 </Nav.Link>
 
                 {/* 歷史紀錄入口 */}
