@@ -1,11 +1,14 @@
--- 250506 第二版
+-- 250511 第三版
 
-CREATE TABLE users (
+CREATE TABLE user (
   id INT PRIMARY KEY AUTO_INCREMENT COMMENT '用戶唯一識別碼',
   username VARCHAR(50) NOT NULL UNIQUE COMMENT '帳號名稱，作為登入識別',
   password VARCHAR(255) NOT NULL COMMENT '加密後的使用者密碼',
   password_salt VARCHAR(255) COMMENT '密碼加鹽用於加強加密安全性',
   email VARCHAR(100) NOT NULL UNIQUE COMMENT '電子郵件，用於帳號驗證與通知',
+  completed boolean not null default false COMMENT '驗證完畢用戶',
+
+
   balance INT DEFAULT 1000 COMMENT '模擬錢包餘額（單位：元）',
 
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '建立時間',

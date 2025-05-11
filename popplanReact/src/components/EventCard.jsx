@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaHeart } from "react-icons/fa";
 import Card from "react-bootstrap/Card";
+import { Navigate } from "react-router-dom";
 
 /* eslint-disable react/prop-types */
 
@@ -46,8 +47,18 @@ function EventCard({ event }) {
     }
   };
 
+  //發送給8080的請求
+  const handleClick = () => {
+    fetch(`http://localhost:8080/event/${event.id}`)
+      .then(() => {
+        console.log("已送出請求");
+        Navigate(`/event/${event.id}`); // 然後切換頁面
+      });
+  };
+
   return (
     <a href={`/event/${event.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+
       <Card style={{ margin: "0.5rem 0", position: "relative", border: "1px solid #ddd" }}>
         <div style={{ position: "relative" }}>
           <Card.Img

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Navbar, Container, Form, FormControl, Button, Nav, Offcanvas, Image } from 'react-bootstrap';
 import { BsPencil, BsHeart, BsClock, BsPersonCircle, BsSearch } from 'react-icons/bs'; // 引入放大鏡圖示
-
+import { Link } from "react-router-dom";
 function NavigationBar() {
   const [showLogin, setShowLogin] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false); // 登入狀態
@@ -10,14 +10,19 @@ function NavigationBar() {
 
   return (
     <>
-      <Navbar expand="md" className="py-3" style={{ backgroundColor: '#e3f2fd' }}>
+
+      <Navbar expand="md" className="py-3" style={{ backgroundColor: '#e3f2fd', boxSizing: 'border-box' }}>
         <Container fluid>
-          <Navbar.Brand href="#" className="fw-bold text-primary d-none d-md-block p-0 me-2">
-            PopPlan
-          </Navbar.Brand>
-          <Navbar.Brand href="#" className="fw-bold text-primary d-md-none p-0 me-2">
-            PP
-          </Navbar.Brand>
+
+          {/* LOGO首頁區 */}
+          <Link to="/">
+            <Navbar.Brand href="#" className="fw-bold text-primary d-none d-md-block p-0 me-2">
+              PopPlan
+            </Navbar.Brand>
+            <Navbar.Brand href="#" className="fw-bold text-primary d-md-none p-0 me-2">
+              PP
+            </Navbar.Brand>
+          </Link>
 
           {/* 搜尋框 */}
           <div className="d-md-flex align-items-center">
@@ -35,36 +40,35 @@ function NavigationBar() {
           <Navbar.Toggle aria-controls="offcanvasNavbar" />
           <Navbar.Offcanvas id="offcanvasNavbar" placement="end">
             <Offcanvas.Header closeButton>
-              <Offcanvas.Title>選單</Offcanvas.Title>
+              <Offcanvas.Title >選單</Offcanvas.Title>
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="justify-content-end flex-grow-1 pe-3">
                 {/* 創建活動入口 */}
-                <Nav.Link href="#createEvent">
-                  <BsPencil className="me-2" /> 創建活動
+                <Nav.Link href="/Eventform" className='navbar-bottom g-3' >
+                  創建活動 <BsPencil className="me-2" />
                 </Nav.Link>
-
+                <span className="pe-2">.</span>
                 {/* 收藏報名入口 */}
-                <Nav.Link href="#myRegistrations" className='d-flex gap-3' >
+                <Nav.Link href="/registrations" className='d-flex gap-1 navbar-bottom'>
+                  <span>收藏報名 </span>
                   <div className="relative">
-                    <BsHeart className="me-2" />
+                    <BsHeart className="me-1" />
                     {notificationCount > 0 && (
                       <span className="badge bg-danger absolute top-negative-1  start-50">{notificationCount}</span>
                     )}
                   </div>
-                  <span>
-                    收藏報名
-                  </span>
-                </Nav.Link>
 
+                </Nav.Link>
+                <span className="pe-2">.</span>
                 {/* 歷史紀錄入口 */}
-                <Nav.Link href="#history">
-                  <BsClock className="me-2" /> 歷史紀錄
+                <Nav.Link href="/events" className="navbar-bottom">
+                  歷史紀錄 <BsClock />
                 </Nav.Link>
-
+                <span className="pe-2">.</span>
                 {/* 登入 / 註冊或用戶選單 */}
                 {isLoggedIn ? (
-                  <Nav.Link href="#profile">
+                  <Nav.Link href="/login" >
                     <Image
                       src="https://via.placeholder.com/40"
                       roundedCircle
@@ -74,21 +78,12 @@ function NavigationBar() {
                   </Nav.Link>
                 ) : (
                   <>
-                    <Nav.Link href="#login" onClick={() => setShowLogin(true)}>
+                    <Nav.Link href="/login" onClick={() => setShowLogin(true)} className="navbar-bottom">
                       登入
                     </Nav.Link>
-                    <Nav.Link href="#register">註冊</Nav.Link>
                   </>
                 )}
               </Nav>
-
-              {/* 當 showLogin 為 true，顯示登入表單 */}
-              {showLogin && (
-                <div className="login-form-container">
-                  {/* 這裡可以是你的登入表單元件 */}
-                  <Button onClick={() => setShowLogin(false)}>關閉登入表單</Button>
-                </div>
-              )}
             </Offcanvas.Body>
           </Navbar.Offcanvas>
         </Container>

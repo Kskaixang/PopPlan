@@ -1,0 +1,17 @@
+1.為什麼沒有連動到login 5173
+-有連動到 但我想開始改登入頁
+
+從註冊的搬運開始著手
+接下來要做JAVA Cart大規模搬運
+這邊一定得先串好
+我後面才有東西做
+
+1.搬運
+userkigubservket
+userlogoutservlet
+userRegisterservlet 完成
+
+接下來處理登入
+
+睡前都都搞了創建頁 只是感受而已
+還是登入比較重要
