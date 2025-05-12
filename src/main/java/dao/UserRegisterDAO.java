@@ -1,6 +1,6 @@
 package dao;
 
-import model.User;
+import model.entity.User;
 //PP DAO
 public interface UserRegisterDAO {
 	//新增 User  返回 成功筆數

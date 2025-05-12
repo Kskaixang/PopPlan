@@ -3,7 +3,7 @@ package com.example.demo;
 
 import org.springframework.web.bind.annotation.*;
 
-import model.Event;
+import model.entity.Event;
 
 @RestController
 @RequestMapping("/api")

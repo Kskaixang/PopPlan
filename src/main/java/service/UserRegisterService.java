@@ -1,6 +1,6 @@
 package service;
 
-import model.User;
+import model.entity.User;
 
 public interface UserRegisterService {
 	//新增 User

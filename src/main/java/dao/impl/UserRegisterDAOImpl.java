@@ -4,8 +4,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import dao.UserRegisterDAO;
-//PP
-import model.User;
+import model.entity.User;
 
 
 public class UserRegisterDAOImpl extends BaseDao implements UserRegisterDAO{

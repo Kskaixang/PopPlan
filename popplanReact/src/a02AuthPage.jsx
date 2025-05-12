@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Container, Form, Button, Row, Col, Image } from 'react-bootstrap';
 import "./components/css/button.css";
 function AuthPage() {
@@ -7,9 +8,11 @@ function AuthPage() {
 
   // 表單欄位狀態
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [captcha, setCaptcha] = useState('');
+  const [email, setEmail] = useState('wss07715@gmail.com');
+  const [password, setPassword] = useState('www');
+  const [authcode, setAuthcode] = useState('');
+  //跳頁物件
+  const navigate = useNavigate();
 
 
 
@@ -20,7 +23,7 @@ function AuthPage() {
     setUsername('');
     setEmail('');
     setPassword('');
-    setCaptcha('');
+    setAuthcode('');
   };
 
   // 提交處理（可接 API）
@@ -31,7 +34,7 @@ function AuthPage() {
 
     // 組裝要送出的資料
     const payload = mode === 'login'
-      ? { email, password, captcha }
+      ? { email, password, authcode }
       : { email, password, username };
 
     try {
@@ -40,6 +43,8 @@ function AuthPage() {
         headers: {
           'Content-Type': 'application/json'
         },
+
+        credentials: "include",//🔥 這個一定要帶上才能保留 session/cookie
         body: JSON.stringify(payload)
       });
 
@@ -53,9 +58,9 @@ function AuthPage() {
         setUsername('');
         setEmail('');
         setPassword('');
-        setCaptcha('');
+        setAuthcode('');
         // 可導向其他頁面，例如：
-        // navigate('/home');
+        navigate('/');
       } else {
         alert(data.message || '操作失敗');
       }
@@ -138,23 +143,32 @@ function AuthPage() {
         {mode === 'login' && (
           <Form.Group className="mb-3">
             <Form.Label>驗證碼：</Form.Label>
-            <Row>
-              <Col xs={7}>
+            <Row className="align-items-center">
+              <Col xs={5}>
                 <Form.Control
                   type="text"
                   placeholder="請輸入驗證碼"
-                  value={captcha}
-                  onChange={(e) => setCaptcha(e.target.value)}
+                  value={authcode}
+                  onChange={(e) => setAuthcode(e.target.value)}
                   required
                 />
               </Col>
-              <Col xs={5}>
-                {/* 這邊是示意用圖，你可以替換為實際的驗證碼圖片 URL */}
+              <Col xs="auto">
                 <Image
-                  src="https://via.placeholder.com/100x32?text=Captcha"
+                  src="http://localhost:8080/user/authcode" // 為了避免快取，點擊按鈕時刷新
                   alt="驗證碼"
                   fluid
+                  style={{ maxHeight: '40px' }} // 控制高度，看起來更整齊
+                // 🔄 加上 key，每次刷新時強制 React 重新渲染
                 />
+              </Col>
+              <Col xs="auto">
+                <Button
+                  variant="outline-primary"
+                  onClick={() => window.location.reload()} // 點擊刷新圖像
+                >
+                  重新產生
+                </Button>
               </Col>
             </Row>
           </Form.Group>

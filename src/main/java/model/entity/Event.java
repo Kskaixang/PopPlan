@@ -1,4 +1,4 @@
-package model;
+package model.entity;
 //src/main/java/com/example/demo/model/Event.java
 
 import lombok.AllArgsConstructor;

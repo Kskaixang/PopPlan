@@ -2,7 +2,7 @@ package service.impl;
 //PP
 import dao.UserRegisterDAO;
 import dao.impl.UserRegisterDAOImpl;
-import model.User;
+import model.entity.User;
 import service.UserRegisterService;
 import util.HashUtil;
 
@@ -27,7 +27,7 @@ public class UserRegisterServiceImpl implements UserRegisterService{
 			user.setEmail(email);
 			//檢查區
 			System.out.println("UserService");
-			System.out.println("1"+username + "2"+hashPassword + "3"+hashSalt +"4"+email);
+			System.out.println("1 "+username + " 2hashPassword : "+hashPassword + " 3hashSalt : "+hashSalt +" 4email "+email);
 			//檢查區
 			
 			
