@@ -6,7 +6,7 @@ import lombok.Data;
 public class User {
 	private Integer id; //null
 	private String username;	
-	private String hashPassword;
+	private String Password;
 	private String hashSalt;
 	private String email;
 	private Boolean completed; //null

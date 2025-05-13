@@ -30,5 +30,8 @@ React credentials: "include",//🔥 session/cookie
 2.響應式漢堡列沒修
 
 然後出現新問題 
-1.UserRegisterServiceImpl加鹽 和取出時的 user.getHashPassword().equals(hashPassword)不一致
+1.UserRegisterServiceImpl加鹽 和取出時的 user.getHashPassword().equals(hashPassword)不一致 (已經解決 因為resigter時 想接收hashPassword 但React是送Password)
 2.navbar沒有讀到session區的使用者 沒有自動切換
+0513---------------------
+上2已經解決
+新增了登出鍵

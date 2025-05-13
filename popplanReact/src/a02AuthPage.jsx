@@ -9,7 +9,7 @@ function AuthPage() {
   // 表單欄位狀態
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('wss07715@gmail.com');
-  const [password, setPassword] = useState('www');
+  const [password, setPassword] = useState('abc');
   const [authcode, setAuthcode] = useState('');
   //跳頁物件
   const navigate = useNavigate();

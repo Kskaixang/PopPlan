@@ -4,9 +4,11 @@ import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpSession;
@@ -29,11 +31,11 @@ public class UserController {
 	// 處理註冊
 	@PostMapping("/user/register")
 	public ResponseEntity<?> register(@RequestBody User user) {
-		System.out.println("");
+		System.out.println("此時收到的密碼是? " + user.getPassword());
 		System.out.println(user);
 		String username = user.getUsername();
-		String password = user.getHashPassword();
 		String email = user.getEmail();
+		String password = user.getPassword();
 
 		userRegisterService.addUser(username, password, email);
 
@@ -45,7 +47,7 @@ public class UserController {
 		return ResponseEntity.ok().body("{\"message\":\"註冊成功，驗證信已寄出\"}");
 	}
 
-	@PostMapping("/user/login")
+	@PostMapping("/user/login") 
 	public ResponseEntity<?> login(@RequestBody Map<String, String> data, HttpSession session) {
 	    System.out.println("login 被觸發了" + data.get("email"));
 		String email = data.get("email");
@@ -55,18 +57,35 @@ public class UserController {
 	    
 	    String resultMessage = null;
 	    try {
-	    	System.out.println("我在con 傳的Email是:" + email);
-	    	System.out.println("我在con 傳的pass是:" + password);
 			UserDTO userDTO = userLoginService.login(email, password, authcode, sesstionAuthCode);
 			resultMessage = email + "登入成功";
 			//將登入資訊 存到session 中 以便其他頁面可以取得使用者相關資訊
 			session.setAttribute("userDTO", userDTO);  // 成功 把新資料覆蓋進去sessrion
+			//檢查一下 這個行為有沒有意義
+			System.out.println("從session 看看能不能get東西"+session.getAttribute("userDTO"));
+			
+			
+			
 			return ResponseEntity.ok(userDTO); 
 		} catch (RuntimeException e) {
 			session.removeAttribute(email);  //移除異常的舊登入資訊sessrion
 			return ResponseEntity.status(401).body(e.getMessage());
 		}
 	    
+	}
+	//http://localhost:8080/user/login/session
+	//檢查session存在與否
+	@GetMapping("/user/login/session")
+	@ResponseBody
+	public Object debugSession(HttpSession session) {
+	    return session.getAttribute("userDTO");
+	}
+	
+	//登出
+	@GetMapping("/logout")
+	public ResponseEntity<?> logout(HttpSession session) {
+	    session.invalidate(); // ✅ 清除登入資訊
+	    return ResponseEntity.ok("登出成功");
 	}
 
 }

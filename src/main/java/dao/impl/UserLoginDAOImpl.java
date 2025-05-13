@@ -22,7 +22,7 @@ public class UserLoginDAOImpl extends BaseDao  implements UserLoginDAO{
 					User user = new User();
 					user.setId(rs.getInt("id"));
 					user.setUsername(rs.getString("username"));
-					user.setHashPassword(rs.getString("password"));
+					user.setPassword(rs.getString("password"));
 					user.setHashSalt(rs.getString("password_salt"));
 					user.setEmail(rs.getString("email"));
 					user.setCompleted(rs.getBoolean("completed"));

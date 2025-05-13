@@ -15,19 +15,21 @@ public class UserRegisterServiceImpl implements UserRegisterService{
 	@Override
 	public void addUser(String username , String password , String email) {
 		try {
+			//隨機鹽建立 要丟給SQL的
 			String hashSalt = HashUtil.generateSalt();
+			//註冊密 + 隨機鹽 混和成 密鹽
 			String hashPassword = HashUtil.hashPassword(password, hashSalt);
 			
 			//建立物件
 			User user = new User();
 			user.setUsername(username);
 			//注意User物件中部可以存放明碼 購過哈希 與加鹽 (資安)
-			user.setHashPassword(hashPassword);
+			user.setPassword(hashPassword);
 			user.setHashSalt(hashSalt);
 			user.setEmail(email);
 			//檢查區
 			System.out.println("UserService");
-			System.out.println("1 "+username + " 2hashPassword : "+hashPassword + " 3hashSalt : "+hashSalt +" 4email "+email);
+			System.out.println("1 : "+username + " 2hashPassword : "+hashPassword + " 3hashSalt : "+hashSalt +" 4email : "+email);
 			//檢查區
 			
 			

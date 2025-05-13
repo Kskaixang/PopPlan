@@ -25,14 +25,15 @@ public class UserLoginServiceImpl implements UserLoginService{
 			throw new RuntimeException("信箱未驗證");
 		}
 		try {
-			
+			//登入的密碼 加上資料庫的鹽 混和成 登入密鹽
 			String hashPassword = HashUtil.hashPassword(password, user.getHashSalt());
 			//資料庫比對
 			System.out.println("驗證一下兩處是否相似");
-			System.out.println(user.getHashPassword()); //資料庫的
+			System.out.println(user.getPassword()); //資料庫的
 			System.out.println(hashPassword);
-			//boolean checkPassword = user.getHashPassword().equals(hashPassword);
-			boolean checkPassword = true;
+			//比對資料庫密碼 是否等於 混和登入密鹽
+			boolean checkPassword = user.getPassword().equals(hashPassword);
+			//boolean checkPassword = true;
 			if(!checkPassword) {
 				throw new RuntimeException("密碼錯誤");
 			}
