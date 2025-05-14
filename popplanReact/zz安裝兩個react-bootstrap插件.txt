@@ -2,6 +2,8 @@
 npm install react-router-dom  跳頁插件
 npm install react-bootstrap bootstrap
 npm install bootstrap-icons
+
+npm run dev
 npm install swiper
 
 統一在main.jsx引入

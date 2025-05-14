@@ -7,3 +7,11 @@
 .top-negative-1 {
   top: -8px;
 }
+  
+.navbar-bottom {
+  box-shadow: 0 4px 0 0 transparent; /* 預設為透明底線 */
+  transition: box-shadow 0.3s ease;  /* 平滑過渡 */
+}
+.navbar-bottom:hover {
+  box-shadow: 0 4px 0 0 skyblue; /* 懸停時顯示藍色底線 */
+}

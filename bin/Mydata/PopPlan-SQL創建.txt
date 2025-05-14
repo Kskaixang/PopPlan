@@ -1,11 +1,14 @@
--- 250506 第二版
+-- 250511 第三版
 
-CREATE TABLE users (
+CREATE TABLE user (
   id INT PRIMARY KEY AUTO_INCREMENT COMMENT '用戶唯一識別碼',
   username VARCHAR(50) NOT NULL UNIQUE COMMENT '帳號名稱，作為登入識別',
   password VARCHAR(255) NOT NULL COMMENT '加密後的使用者密碼',
   password_salt VARCHAR(255) COMMENT '密碼加鹽用於加強加密安全性',
   email VARCHAR(100) NOT NULL UNIQUE COMMENT '電子郵件，用於帳號驗證與通知',
+  completed boolean not null default false COMMENT '驗證完畢用戶',
+
+
   balance INT DEFAULT 1000 COMMENT '模擬錢包餘額（單位：元）',
 
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '建立時間',
@@ -22,10 +25,11 @@ CREATE TABLE events (
   location VARCHAR(255) COMMENT '活動地點說明',
   is_online BOOLEAN DEFAULT FALSE COMMENT '是否為線上活動',
   start_time DATETIME NOT NULL COMMENT '活動開始時間',
-  end_time DATETIME NOT NULL COMMENT '活動結束時間',
-  registration_deadline DATETIME NOT NULL COMMENT '報名截止時間',
+  -- end_time DATETIME NOT NULL COMMENT '活動結束時間',不做金池 這應該就是爛資訊了
+  -- registration_deadline DATETIME NOT NULL COMMENT '報名截止時間',
   price INT DEFAULT 0 COMMENT '報名費用（0 表示免費）',
   max_participants INT COMMENT '報名人數上限',
+  --可能要去掉草稿 因為我還沒有修改頁吧 不過留著也沒差就是
   status ENUM('draft', 'published', 'completed', 'canceled') DEFAULT 'draft' COMMENT '活動狀態',
 
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT '建立時間',
@@ -100,7 +104,7 @@ CREATE TABLE payments (
 ) COMMENT='報名支付記錄（簡化為已支付/待付款）';
 
 
-
+-- 這有可能要拿掉 直接匯款就好了 不然太多表
 CREATE TABLE fund_pool (
   id INT AUTO_INCREMENT PRIMARY KEY COMMENT '金池記錄 ID',
   event_id INT NOT NULL UNIQUE COMMENT '對應的活動 ID（對應 events.id）',

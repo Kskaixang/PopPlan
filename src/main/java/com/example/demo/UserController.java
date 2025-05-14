@@ -1,15 +1,11 @@
 package com.example.demo;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpSession;
 import model.dto.UserDTO;
@@ -40,8 +36,9 @@ public class UserController {
 		userRegisterService.addUser(username, password, email);
 
 		// 發送 email
-		String emailConfirmLink = "http://localhost:8080/email/confirm?username=" + username;
-		emailService.sendEmail(email, emailConfirmLink);
+				String encodedUsername = URLEncoder.encode(username, StandardCharsets.UTF_8);
+				String emailConfirmLink = "http://localhost:8080/email/confirm?username=" + encodedUsername;
+				emailService.sendEmail(email, emailConfirmLink);
 
 		// 回傳 JSON 格式的回應
 		return ResponseEntity.ok().body("{\"message\":\"註冊成功，驗證信已寄出\"}");

@@ -29,7 +29,7 @@ const eventList = Array.from({ length: 150 }, (_, index) => {
     title: `${mainTag}活動 ${index + 1}`,
     tags,
     description: `[${tags.join(', ')}] 這是一場很棒的活動，歡迎參加！這是一場很棒的活動，歡迎參加！這是一場很棒的活動，歡迎參加！這是一場很棒的活動，歡迎參加！`,
-    image: `src/data/images/Carousel${randomImageIndex}.jpg`,
+    image: `src/data/images/popular_${randomImageIndex}.jpg`,
     start_time: generateRandomDate(),
     max_participants: (Math.floor(Math.random() * 5) + 1) * 10, // 10 ~ 50
     status: statuses[Math.floor(Math.random() * statuses.length)],

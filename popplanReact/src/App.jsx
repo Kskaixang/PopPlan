@@ -1,7 +1,8 @@
 // App.jsx
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 //導覽列
-import NavigationBar from "./a00NavigationBar";
+//import NavigationBar from "./a00NavigationBar";
+import NavigationBar from "./a00Navbar";
 //主頁
 import Home from "./a01Home";
 // import JsonViewer from "./components/testJson";

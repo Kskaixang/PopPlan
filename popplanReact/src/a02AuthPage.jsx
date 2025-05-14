@@ -20,9 +20,9 @@ function AuthPage() {
   const toggleMode = (newMode) => {
     setMode(newMode);
     // 清空表單
-    setUsername('');
-    setEmail('');
-    setPassword('');
+    setUsername('凱Ks');
+    setEmail('wss07715@gmail.com');
+    setPassword('abc');
     setAuthcode('');
   };
 
@@ -78,10 +78,10 @@ function AuthPage() {
       <Row className="mb-3 text-center">
         <Col>
           <Button
-            variant={mode === 'login' ? 'outline-secondary' : 'outline-primary'}
-            className="w-100 me-2 mb-2 rounded-pill shadow-sm px-3 custom-clear-button"
+            variant="outline-secondary"
+            className={`w-100 me-2 mb-2 rounded-pill shadow-sm px-3 custom-clear-button ${mode === 'login' ? 'selected-mode' : ''
+              }`}
             onClick={() => toggleMode('login')}
-
           >
             登入
           </Button>
@@ -89,8 +89,9 @@ function AuthPage() {
 
         <Col>
           <Button
-            variant={mode === 'register' ? 'outline-secondary' : 'outline-primary'}
-            className="w-100 me-2 mb-2 rounded-pill shadow-sm px-3 custom-clear-button"
+            variant="outline-secondary"
+            className={`w-100 me-2 mb-2 rounded-pill shadow-sm px-3 custom-clear-button ${mode === 'register' ? 'selected-mode' : ''
+              }`}
             onClick={() => toggleMode('register')}
           >
             註冊
@@ -179,11 +180,12 @@ function AuthPage() {
           <Button
             className="w-100 me-2 mb-2 rounded-pill shadow-sm px-3 "
             type="submit" variant="outline-secondary">
-            {mode === 'login' ? '登入' : '註冊'}
+            {mode === 'login' ? '確認' : '註冊'}
           </Button>
           <Button
             className="w-100 me-2 mb-2 rounded-pill shadow-sm px-3 "
-            variant="outline-secondary" type="button" onClick={() => toggleMode(mode)}>
+            variant="outline-secondary" type="button"
+            href='/'>
             取消
           </Button>
         </div>

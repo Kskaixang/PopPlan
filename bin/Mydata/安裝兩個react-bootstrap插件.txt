@@ -1,8 +1,11 @@
 安裝兩個react-bootstrap插件
-
+npm install react-router-dom  跳頁插件
 npm install react-bootstrap bootstrap
 npm install bootstrap-icons
+npm install swiper
 
 統一在main.jsx引入
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
+
+

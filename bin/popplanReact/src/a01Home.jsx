@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { Button, Container } from "react-bootstrap";
 import TagFilterPanel from "./components/TagFilterPanel";
-import LatestEventList from "./components/LatestEventList";
+import LatestEventList from "./components/EventLatestList";
 import EventList from "./components/EventList";
-import "./components/button.css";
-import Slide from "./components/Slide";
+import "./components/css/button.css";
 
 const tagGroups = {
   "分類A": ["樂團", "偶像"],
@@ -35,7 +34,6 @@ function Home() {
 
   return (
     <>
-      <Slide />
       <Container className="mt-4 p-4 border border-gray bg-white shadow rounded">
         <Button
           variant="outline-secondary" // 保持按鈕的邊框樣式
