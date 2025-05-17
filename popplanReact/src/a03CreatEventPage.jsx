@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
+import AIChatStreaming from './components/AIChatStreaming';
+
 import {
   Container, Row, Col, Form, Button, InputGroup, FormControl
 } from 'react-bootstrap';
 
 const tagGroups = {
-  時間: ["平日", "假日"],
+  時間: ["週一", "週二", "週三", "週四", "週五", "週六", "週日"],
   地區: ["北部", "中部", "南部", "東部", "離島", "線上"],
-  活動: ["樂團", "桌遊", "偶像", "免費", "付費", "KTV", "美食", "運動", "展覽", "DIY", "語言", "學習", "動漫", "Cosplay", "宗教", "戶外", "寵物", "志工", "揪團"]
+  活動: ["樂團", "桌遊", "偶像", "KTV", "美食", "運動", "展覽", "DIY", "語言", "學習", "動漫", "Cosplay", "宗教", "戶外", "寵物", "志工", "揪團"]
 };
 
 function CreateEventPage() {
@@ -17,7 +19,11 @@ function CreateEventPage() {
   const [startTime, setStartTime] = useState('');
   const [maxParticipants, setMaxParticipants] = useState('');
   const [price, setPrice] = useState(0);
+  const [isFree, setIsFree] = useState(false);
   const [status] = useState('draft'); // 僅創建階段使用，後續視情況開放修改
+  const [aiChatStreaming, setAiChatStreaming] = useState('');
+
+  const [showAiBox, setShowAiBox] = useState(false);
 
   const [selectedTags, setSelectedTags] = useState({
     時間: '',
@@ -26,12 +32,42 @@ function CreateEventPage() {
   });
   const [mainTag, setMainTag] = useState('');
   const [customTags, setCustomTags] = useState(["", "", "", ""]);
+  const [systemTags, setSystemTags] = useState([]); // ← 程式自動控制的 免費 tag
+  //總TAG
+  const getFinalTags = () => {
+    const selected = Object.values(selectedTags).filter(tag => tag); // ["週末", "台北"]
+    const custom = customTags.filter(tag => tag.trim() !== ""); // ["親子", "戶外"]
+    const system = isFree ? ["免費"] : [];
 
-  const addCustomTag = () => {
-    if (customTags.length < 4) {
-      setCustomTags([...customTags, '']);
-    }
+    const allTags = [...selected, mainTag, ...custom, ...system].filter(tag => tag); // 移除空值
+    return allTags;
   };
+
+
+  //AI區間
+  const generateAiText = () => {
+    const selectedTagText = Object.entries(selectedTags)
+      .filter(([_, value]) => value)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join('、');
+
+    const mainTagText = mainTag ? `主題: ${mainTag}` : '';
+
+    //偷懶"免費"直接加進去
+    const customTagText = '元素: ' + (isFree ? '免費、' : '') + customTags
+      .filter((tag) => tag && tag.trim() !== '')
+      .join('、');
+
+    const combinedText = [selectedTagText, mainTagText, customTagText]
+      .filter((text) => text)
+      .join('\n');
+
+    setAiChatStreaming(combinedText);
+    setShowAiBox(prev => !prev); // 顯示對話框
+  };
+  //AI區間底
+
+
 
   const handleCustomTagChange = (index, value) => {
     const updatedTags = [...customTags];
@@ -42,23 +78,187 @@ function CreateEventPage() {
   const handleTagChange = (group, value) => {
     setSelectedTags({ ...selectedTags, [group]: value });
   };
-
-  const handleSubmit = (e) => {
+  //POST表單送出start
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // 後端POST邏輯，包含 imageUrl 與其他欄位
-    console.log({ title, imageUrl, description, location, startTime, maxParticipants, price, status, selectedTags, mainTag, customTags });
+    const finalTags = getFinalTags(); // 假設這個函式會回傳標籤陣列
+    const formData = {
+      title,
+      imageUrl,
+      description,
+      location,
+      startTime,
+      maxParticipants,
+      price,
+      status,
+      tags: finalTags,  // 這邊假設 finalTags 是陣列，並送到後端的 tags 欄位
+    };
+
+    try {
+      // 使用 fetch 發送 POST 請求
+      const response = await fetch('http://localhost:8080/popplan/event', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json', // 設定請求體格式為 JSON
+        },
+        body: JSON.stringify(formData), // 將表單資料轉換為 JSON 字串
+      });
+
+      // 等待後端回應
+      const data = await response.json();
+
+      // 檢查後端回應的結果
+      if (response.ok) {
+        alert(data.message || '事件已成功創建！');
+      } else {
+        alert(`錯誤: ${data.message || '無法創建事件(也無收到JSON)'}`);
+      }
+    } catch (error) {
+      // 捕獲任何錯誤
+      alert('發生錯誤，請稍後再試！');
+      console.error('Error submitting form:', error);
+    }
+  };
+  //Post表單送出End
+
+  //更換預覽圖
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setImageUrl(previewUrl);
+    }
   };
 
+
+
   return (
-    <Container className="my-4">
+
+    <Container className="mt-4 p-4 border border-gray bg-white shadow rounded">
       <h2>創建活動</h2>
+
+      {/* returnTAG區start */}
+      <Row>
+        <Form.Label>標籤Tag</Form.Label>
+        {Object.entries(tagGroups).map(([group, options]) => (
+          <Col xs={6} md={3} key={group}>
+            <Form.Select className="mb-2"
+              value={selectedTags[group] || ''}
+              onChange={(e) => handleTagChange(group, e.target.value)}
+            >
+              <option value="">選擇{group}</option>
+              {options.map((opt, i) => (
+                <option key={i} value={opt}>{opt}</option>
+              ))}
+            </Form.Select>
+          </Col>
+        ))}
+        <Col xs={6} md={3}>
+          <Form.Control
+            type="text"
+            placeholder="主題tag（必填）"
+            value={mainTag}
+            onChange={(e) => setMainTag(e.target.value)}
+            required
+          />
+        </Col>
+      </Row>
+
+      <Row className="mb-3">
+        {Array.from({ length: 4 }).map((_, index) => (
+          <Col key={index} xs={6} md={3}>
+            <InputGroup className="mb-2">
+              <FormControl
+                placeholder="自訂（選填）"
+                value={customTags[index] || ""}
+                onChange={(e) => handleCustomTagChange(index, e.target.value)}
+              />
+            </InputGroup>
+          </Col>
+        ))}
+      </Row>
+      {/* returnTAG區end */}
+
+      <Row>
+        <Col md={3}>
+          {/* 金額start */}
+          <div className="d-flex align-items-center mb-2">
+            {/* 報名費用標籤 */}
+            <Form.Label className="me-3 mb-0">報名費用</Form.Label>
+
+            {/* 免費選項 */}
+            <Form.Check
+              type="checkbox"
+              label="免費"
+              checked={isFree}
+              onChange={(e) => {
+                const checked = e.target.checked;
+                setIsFree(checked);
+
+                setSystemTags((prev) => {
+                  const filtered = prev.filter(tag => tag !== "免費");
+                  return checked ? [...filtered, "免費"] : filtered;
+                });
+              }}
+              className="mb-0"
+            />
+          </div>
+
+
+
+          {/* 金額框 */}
+          <InputGroup className='mb-4 '>
+            <Form.Control
+              type="number"
+              placeholder="請輸入金額"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              disabled={isFree}
+              className='text-end'
+            />
+            <InputGroup.Text>
+              {isFree ? '免費活動' : '元'}
+            </InputGroup.Text>
+          </InputGroup>
+          {/* 金額end */}
+        </Col>
+        <Col md={9}>
+          <Form.Group className="mb-3">
+            <Form.Label>活動地點</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="活動地點"
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+            />
+          </Form.Group>
+        </Col>
+      </Row>
+
+
+
+
       <Form onSubmit={handleSubmit}>
         <Row className="mb-3">
-          <Col md={12}>
-            <div className="border p-3 mb-2 text-center bg-light" style={{ height: '400px' }}>預覽圖</div>
+          <Col md={6} className="mx-auto">
+            <div className="border p-3 mb-2 text-center bg-light" style={{ height: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {imageUrl ? (
+                <img
+                  src={imageUrl}
+                  alt="預覽圖"
+                  style={{
+                    maxHeight: '100%',
+                    maxWidth: '100%',
+                    objectFit: 'contain'
+                  }}
+                />
+              ) : (
+                <p style={{ margin: 0, color: '#888' }}>請上傳圖片</p>
+              )}
+            </div>
             <Form.Control
               type="file"
-              onChange={(e) => setImageUrl(e.target.files[0])}
+              onChange={handleImageChange}
               accept="image/*"
             />
           </Col>
@@ -75,9 +275,32 @@ function CreateEventPage() {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label>活動介紹</Form.Label>
+        <Form.Group className="mb-3" >
+          <Form.Label>
+            活動介紹
+            <Button
+              onClick={generateAiText}
+              variant="outline-secondary"
+              className="custom-clear-button ms-3"
+              style={{ backgroundColor: showAiBox ? '#D1E9E9' : '#e3f2fd' }}
+            >{showAiBox ? '收起 AI 小幫手' : '啟動 AI 小幫手'}
+            </Button>
+
+          </Form.Label>
+
+          {/* 當 showAiBox 為 true 時顯示對話框和送出按鈕 */}
+          {showAiBox && (
+
+            <div className="mb-3">
+              <AIChatStreaming
+                setDescription={setDescription}
+                aiChatStreaming={aiChatStreaming}
+              />
+
+            </div>
+          )}
           <Form.Control
+            style={{ height: "400px" }}
             as="textarea"
             placeholder="活動介紹"
             rows={3}
@@ -86,18 +309,10 @@ function CreateEventPage() {
           />
         </Form.Group>
 
-        <Form.Group className="mb-3">
-          <Form.Label>活動地點</Form.Label>
-          <Form.Control
-            type="text"
-            placeholder="活動地點"
-            value={location}
-            onChange={(e) => setLocation(e.target.value)}
-          />
-        </Form.Group>
+
 
         <Row className="mb-3">
-          <Col md={6}>
+          <Col md={4}>
             <Form.Label>活動開始日期</Form.Label>
             <Form.Control
               type="datetime-local"
@@ -106,69 +321,17 @@ function CreateEventPage() {
               required
             />
           </Col>
-          <Col md={6}>
+          <Col md={4}>
             <Form.Label>最大人數</Form.Label>
             <Form.Control
+              min={5}
+              required
               type="number"
               placeholder="最大人數"
               value={maxParticipants}
               onChange={(e) => setMaxParticipants(e.target.value)}
             />
           </Col>
-        </Row>
-
-        <Row className="mb-3">
-          <Form.Label>標籤Tag</Form.Label>
-          {Object.entries(tagGroups).map(([group, options]) => (
-            <Col md={3} key={group}>
-              <Form.Select
-                value={selectedTags[group] || ''}
-                onChange={(e) => handleTagChange(group, e.target.value)}
-              >
-                <option value="">選擇{group}</option>
-                {options.map((opt, i) => (
-                  <option key={i} value={opt}>{opt}</option>
-                ))}
-              </Form.Select>
-            </Col>
-          ))}
-          <Col md={3}>
-            <Form.Control
-              type="text"
-              placeholder="主題tag（必填）"
-              value={mainTag}
-              onChange={(e) => setMainTag(e.target.value)}
-              required
-            />
-          </Col>
-        </Row>
-        <Row className="mb-3">
-          {Array.from({ length: 4 }).map((_, index) => (
-            <Col key={index} xs={6} md={3}>
-              <InputGroup className="mb-2">
-                <FormControl
-                  placeholder="自訂（選填）"
-                  value={customTags[index] || ""}
-                  onChange={(e) => handleCustomTagChange(index, e.target.value)}
-                />
-              </InputGroup>
-            </Col>
-          ))}
-        </Row>
-
-
-        <Row className="mb-4">
-
-          <Col md={4}>
-            <Form.Label>報名費用</Form.Label>
-            <Form.Control
-              type="number"
-              placeholder="報名費用"
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-            />
-          </Col>
-
           <Col md={4}>
             <Form.Label>活動狀態</Form.Label>
             <Form.Select value={status} disabled>
@@ -179,17 +342,28 @@ function CreateEventPage() {
             </Form.Select>
             {/* 僅創建階段為草稿，其他情境未來啟用 */}
           </Col>
-          <Col md={4}>
-            <Form.Label>　</Form.Label>
-            <Button
-              type="submit"
-              variant="outline-secondary"
-              className="w-100 custom-clear-button"
-            >
-              創建活動
-            </Button>
-          </Col>
         </Row>
+
+
+
+
+        <Row className="mb-4">
+          <Col md={6} className="d-flex align-items-center" >
+
+          </Col>
+
+
+
+        </Row>
+        <Col md={12}>
+          <Button
+            type="submit"
+            variant="outline-secondary"
+            className="w-100 custom-clear-button"
+          >
+            創建活動
+          </Button>
+        </Col>
       </Form>
     </Container>
   );

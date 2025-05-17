@@ -13,7 +13,10 @@ import EventForm from "./a03CreatEventPage";
 import AuthPage from "./a02AuthPage";
 
 //session檢查  CheckSession
-import CheckSession from "./components/CheckSession";
+//import CheckSession from "./components/CheckSession";
+
+//AI
+import AI from './components/AIChatStreaming';
 
 
 //結果呈現
@@ -30,7 +33,8 @@ function App() {
         {/* <Route path="/login" element={<Login />} /> */}
         <Route path="/login" element={<AuthPage />} />
         <Route path="/Result" element={<Result />} />
-        <Route path="/CheckSession" element={<CheckSession />} />
+        {/* <Route path="/CheckSession" element={<CheckSession />} /> */}
+        <Route path="/AI" element={<AI />} />
       </Routes>
     </Router>
   );

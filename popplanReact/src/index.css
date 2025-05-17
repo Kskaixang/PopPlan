@@ -23,3 +23,11 @@
 .navbar-bottom:hover {
   box-shadow: 0 4px 0 0 skyblue; /* 懸停時顯示藍色底線 */
 }
+
+.pp-mainColor {
+  background-color: #e3f2fd;
+}
+
+.pp-seconColor {
+  background-color: #D1E9E9;
+}

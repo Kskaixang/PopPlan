@@ -5,10 +5,6 @@ import LatestEventList from "./components/EventLatestList";
 import EventList from "./components/EventList";
 import "./components/css/button.css";
 
-const tagGroups = {
-  "分類A": ["樂團", "偶像"],
-  "分類B": ["免費", "桌遊"],
-};
 
 function Home() {
   const [selectedTags, setSelectedTags] = useState([]);
@@ -47,7 +43,7 @@ function Home() {
 
         <div className="mb-4">
           <TagFilterPanel
-            tagGroups={tagGroups} // 傳遞標籤群組
+            // 傳遞標籤群組
             selectedTags={selectedTags} // 目前選中的標籤
             onTagToggle={handleTagToggle} // 處理選擇標籤的邏輯
             onClearTags={() => setSelectedTags([])}
